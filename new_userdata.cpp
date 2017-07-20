@@ -8,7 +8,7 @@ extern "C"
 }
 #include <string>
 #include <iostream>
- struct Student
+struct Student
 {
 public:
 	char  name[30];
@@ -21,8 +21,11 @@ public:
 //
 static int NewStudents(lua_State *L)
 {
+	Student stu;
+	sprintf(stu.name,"%s","heheda");
 	int size = sizeof(struct Student);
 	struct Student *p = (struct Student *)lua_newuserdata(L,size);
+	memcpy(p,&stu,sizeof(Student));
 	return 1;
 }
 //
@@ -42,14 +45,14 @@ static int GetName(lua_State *L)
 	return 1;
 }
 
-const char * test = "tmp = nEw(); setName(tmp,\"xiaoming\"); print(getName(tmp));";
+const char * test = "tmp = newStu(); print(getName(tmp));";
 //const char * test = "print(\"111111\");";
 int main()
 {
 	static lua_State * L;
 	L = luaL_newstate();
 	luaL_openlibs(L);
-	lua_register(L,"nEw",NewStudents);
+	lua_register(L,"newStu",NewStudents);
 	lua_register(L,"setName",SetName);
 	lua_register(L,"getName",GetName);
 	if(luaL_dostring(L,test))
